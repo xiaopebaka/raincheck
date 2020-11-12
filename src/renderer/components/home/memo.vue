@@ -20,7 +20,7 @@
         </div>
         <div class="content" style="margin: 10px">
             <div>
-                <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange"></el-checkbox>
+                <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange" v-if="memo.length>0"></el-checkbox>
                 <el-checkbox-group v-model="checkedmemo" @change="handleCheckedmemoChange">
                     <div>
                         <el-checkbox v-for="(item, index) of sortmemo" :key="index" :label="item">
@@ -85,7 +85,8 @@
                 } else {
                     if (this.memo.length <= max_num) {
                         let now = new Date();
-                        now = Math.floor(now.getTime() / 86400000);
+                        console.log(now.getTime(),this.value2);
+                        now = Math.floor(now.getTime() / 86400000);                        
                         let count = Math.floor((this.value2 / 86400000)) - now;
                         this.data = {
                             msg: this.input,
@@ -160,12 +161,10 @@
                             temp.push(this.memo[i]);
                         }
                     }
-                    //console.log(temp);
                     this.memo=[];
                     this.memo=temp.splice(0);
                 });
                 this.checkedmemo=[];
-                //console.log(this.memo);  
                 this.saveTofile();
             }
         },
