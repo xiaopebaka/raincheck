@@ -11,6 +11,14 @@
             <el-popover placement="right-start" width="300" trigger="click">
                 <el-date-picker class="add-date" v-model="value2" type="date" placeholder="予定日を選択してください。" :picker-options="pickerOptions" value-format="timestamp"></el-date-picker>
                 <el-input class="add-content" placeholder="予定の内容を入力してください。" :rows="4" v-model="input" clearable @keyup.enter.native="adddate"></el-input>
+                <el-switch
+                v-model="value1"
+                inactive-text="To-Do">
+                </el-switch>
+                <div v-if="value1===true">
+                <el-input v-for="(item,index) of list" :key="index" class="add-content" placeholder="やるべきことを入力してください。" :rows="4" v-model="todo[index]" clearable @keyup.enter.native="adddate"></el-input>
+                <el-button icon="el-icon-plus" size="mini" v-on:click="list++,todo.push()" circle></el-button>
+                </div>
                 <el-button type="success" icon="el-icon-check" size="mini" v-on:click="adddate" circle></el-button>
                 <!-- 添加按钮 -->
                 <button class="add-memo" slot="reference">
@@ -24,8 +32,11 @@
                 <el-checkbox-group v-model="checkedmemo" @change="handleCheckedmemoChange">
                     <div>
                         <el-checkbox v-for="(item, index) of sortmemo" :key="index" :label="item">
-                            <div class="item">
+                            <div class="item" v-on:click="item.todoflag=item.todoflag*-1">
                                 {{ item.msg }}まで、あと<span v-if="item.count < 5" style="color: red">{{ item.count }}</span><span v-else style="color: black">{{ item.count }}</span>日
+                                <div v-if="item.todoflag===1">
+                                    <div v-for="(todo) of item.todo" :key="todo">{{todo.name}}</div>
+                                </div>
                             </div>
                         </el-checkbox>
                     </div>
@@ -69,12 +80,15 @@
                     ],
                 },
                 value2: "",
+                value1: false,
                 input: "",
+                todo:[],
                 memo: [],
                 data: {},
                 checkedmemo: [],
                 checkAll: false,
                 isIndeterminate: true,
+                list:1,
             };
         },
         methods: {
@@ -88,14 +102,31 @@
                         console.log(now.getTime(),this.value2);
                         now = Math.floor(now.getTime() / 86400000);                        
                         let count = Math.floor((this.value2 / 86400000)) - now;
+                        if(this.value1===false){
                         this.data = {
                             msg: this.input,
                             count: count,
                             date: this.value2,
-                        };
+                            };
+                        }else {
+                            this.data = {
+                            msg: this.input,
+                            count: count,
+                            date: this.value2,
+                            list:this.list,
+                            todo:[],
+                            };
+                            for(let i=0;i<this.data.list;i++){
+                                let temp={name:this.todo[i],flag:1};
+                                this.data.todo.push(temp);
+                            }
+                        }
+                        console.log(this.data);
+                        this.data["todoflag"]=-1;
                         this.memo.push(this.data);
                         this.saveTofile();
                         this.input="";
+                        this.todo="";
                     } else {
                         this.fullerror();
                     }
@@ -180,10 +211,12 @@
                     });
                     //console.log(array);
                     array.forEach((item) => {
+                        item["todoflag"]=-1;
                         this.memo.push(item);
                     });
                 }
             });
+            //console.log(this.memo);
         },
         computed: {
             sortmemo() {

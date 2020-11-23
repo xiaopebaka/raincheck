@@ -1,91 +1,128 @@
-<template>
-</template>
+<template></template>
 
 <script>
     export default {
-        name: 'Alarm',
-        data(){
-            return{
-                count:'',
-                time:{
-                    mm:0,
-                    ss:0,
+        name: "Alarm",
+        data() {
+            return {
+                count: "",
+                time: {
+                    mm: 0,
+                    ss: 0,
                 },
-            }
+                node: null,
+            };
         },
         methods: {
             open1() {
                 this.counter();
                 this.$notify({
-                    title: '警告',
-                    dangerouslyUseHTMLString:true,
+                    title: "警告",
+                    dangerouslyUseHTMLString: true,
                     message: `雨が降ってきました,傘を忘れないでください!`,
-                    iconClass: 'el-icon-bell',
+                    iconClass: "el-icon-bell",
                     duration: 0,
                     showClose: false,
-                });                
+                });
             },
-            counter(){
-                setInterval(this.secsetup, 1000);
+            counter() {
+                this.$nextTick(() => {
+                    const node = document.getElementsByClassName(
+                        "el-notification__content"
+                    )[0];
+                    console.log(node, "nodedenodeond");
+                    const nodeP = node.getElementsByTagName("p")[0];
+                    nodeP.innerHTML = `雨が降ってきました,傘を忘れないでください!<span id="timer"></span>`;
+                    this.node = document.getElementById("timer");
+                    this.node.innerText = `${this.addZero(this.time.mm)}:${this.addZero(
+          this.time.ss
+        )}経過`;
+                    setInterval(this.secsetup, 1000);
+                });
             },
-            secsetup(){
-                if(this.time.ss<59){
+            secsetup() {
+                if (this.time.ss < 59) {
                     this.time.ss++;
-                    this.$nextTick(()=>{
-                        const node = document.getElementsByClassName('el-notification__content')[0];
-                        const nodeP = node.getElementsByTagName('p')[0];
-                        let sst=this.time.ss.toString();
-                        nodeP.innerHTML=`雨が降ってきました,傘を忘れないでください!<span id="timer">${this.time.mm}:${sst.padStart(2,'0')}経過</span>`;
-                    });
-                }else {
-                    this.time.ss=0;
+                } else {
+                    this.time.ss = 0;
                     this.time.mm++;
-                    this.$nextTick(()=>{
-                        const node = document.getElementsByClassName('el-notification__content')[0];
-                        const nodeP = node.getElementsByTagName('p')[0];
-                        let sst=this.time.ss.toString();
-                        nodeP.innerHTML=`雨が降ってきました,傘を忘れないでください!<span id="timer">${this.time.mm}:${sst.padStart(2,'0')}経過</span>`;
-                    });
                 }
-                console.log(this.time.ss);
-            }
+                this.node.innerText = `${this.addZero(this.time.mm)}:${this.addZero(
+        this.time.ss
+      )}経過`;
+            },
+            addZero(val) {
+                if (val < 10) {
+                    return `0${val}`;
+                }
+                return val;
+            },
+            setStorage() {
+                sessionStorage.setItem('time', JSON.stringify(this.time))
+            },
+            getStorage() {
+                return sessionStorage.getItem('time')
+            },
+            clearNode() {
+                if (this.secsetup) {
+                    clearInterval(this.secsetup);
+                }
+                if (document.getElementsByClassName("el-notification")[0]) {
+                    document.getElementsByClassName("el-notification")[0].remove();
+                }
+            },
         },
-        created() {
-            if (this.$store.state.rain === 0) {
+        mounted() {
+            this.clearNode();
+            if (JSON.parse(this.getStorage())) {
+                this.time = JSON.parse(this.getStorage())
+            }
+            if (this.$store.state.rain===0) {
                 this.open1();
             }
-        }
-    }
+        },
+        beforeDestroy() {
+            this.setStorage()
+            this.clearNode();
+        },
+    };
 </script>
 
 <style>
-@keyframes rotate {
-    0% {
-        transform: rotate(0deg);
+    @keyframes rotate {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        20% {
+            transform: rotate(10deg);
+        }
+
+        40% {
+            transform: rotate(-10deg);
+        }
+
+        60% {
+            transform: rotate(20deg);
+        }
+
+        80% {
+            transform: rotate(-20deg);
+        }
+
+        100% {
+            transform: rotate(0deg);
+        }
     }
-    20% {
-        transform: rotate(10deg);
+
+    .el-icon-bell {
+        transition: all 0.5s;
+        transform-origin: top center;
+        animation: rotate 2s linear infinite;
     }
-    40% {
-        transform: rotate(-10deg);
+
+    #timer {
+        display: flex;
+        justify-content: flex-end;
     }
-    60% {
-        transform: rotate(20deg);
-    }
-    80% {
-        transform: rotate(-20deg);
-    }
-    100% {
-        transform: rotate(0deg);
-    }
-}
-.el-icon-bell {
-    transition: all .5s;
-    transform-origin: top center;
-    animation: rotate 2s linear infinite;
-}
-#timer{
-    display: flex;
-    justify-content: flex-end;
-}
 </style>

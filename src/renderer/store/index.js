@@ -13,11 +13,15 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
       rain:'',
+      wind:'',
     },
     mutations:{
       sync(state,msg){
         //console.log(msg);
         state.rain=msg;
+      },
+      syncwind(state,msg){
+        state.wind=msg;
       }
     },
     modules,

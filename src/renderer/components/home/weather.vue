@@ -68,7 +68,10 @@ export default {
                     temperature:Math.round(nowData.main.temp),
                     description:nowData.weather[0].description,
                     iconPath:require(`../../assets/img/${nowData.weather[0].icon}.svg`),
+                    windspeed:nowData.wind.speed,
                 }
+                this.$store.commit('syncwind',this.nowWeather.windspeed);
+                console.log(this.nowWeather);
                 let afterData=[list[8],list[16],list[24]];
                 this.afterWeather=afterData.map((item)=>{
                     let dateTime=new Date(this.utcToJSTime(item.dt));
