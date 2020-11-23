@@ -1,8 +1,8 @@
 <template>
     <el-card class="states">
-        <div>
-            <table>
-                <tr>現在の天気情報:
+        <div>現在の天気情報:
+            <table class="datas">
+                <tr>
                     <td><img :src="ticon" style="width:30px">{{weather.Temperature}}°C</td>
                     <td><img :src="hicon" style="width:30px">{{weather.Humidity}}%</td>
                     <td><img :src="picon" style="width:40px">{{weather.Pressure}}</td>
@@ -64,10 +64,15 @@
 <style scoped>
     .states {
         width: 400px;
-        height: 100px;
+        height: 125px;
         position: fixed;
         bottom: 50px;
         right: 100px;
         border-radius: 20px;
+    }
+    .datas{
+        margin: 15px;
+        display: flex;
+        justify-content: center;
     }
 </style>
