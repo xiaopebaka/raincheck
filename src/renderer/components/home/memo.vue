@@ -18,6 +18,7 @@
                 <div v-if="value1===true">
                 <el-input v-for="(item,index) of list" :key="index" class="add-content" placeholder="やるべきことを入力してください。" :rows="4" v-model="todo[index]" clearable @keyup.enter.native="adddate"></el-input>
                 <el-button icon="el-icon-plus" size="mini" v-on:click="list++,todo.push()" circle></el-button>
+                <el-button icon="el-icon-minus" size="mini" v-on:click="list>1&&list--,todo.push()" circle></el-button>
                 </div>
                 <el-button type="success" icon="el-icon-check" size="mini" v-on:click="adddate" circle></el-button>
                 <!-- 添加按钮 -->
@@ -35,7 +36,7 @@
                             <div class="item" v-on:click.self="item.todoflag=item.todoflag*-1">
                                 {{ item.msg }}まで、あと<span v-if="item.count < 5" style="color: red">{{ item.count }}</span><span v-else style="color: black">{{ item.count }}</span>日
                                 <div v-if="item.todoflag===1">
-                                    <div v-for="(todo,index) of item.todo" :key="index" :class="todo.flag===1?'none':''" @click="todo.flag=todo.flag*-1">{{todo.name}}</div>
+                                    <div v-for="(todo,index) of item.todo" :key="index" :class="todo.flag===-1?'none':''" @click="todo.flag=todo.flag*-1">・{{todo.name}}</div>
                                 </div>
                             </div>
                         </el-checkbox>
