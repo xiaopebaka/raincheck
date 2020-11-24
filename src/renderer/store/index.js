@@ -14,6 +14,7 @@ export default new Vuex.Store({
     state: {
       rain:'',
       wind:'',
+      type:'C',
     },
     mutations:{
       sync(state,msg){
@@ -22,6 +23,9 @@ export default new Vuex.Store({
       },
       syncwind(state,msg){
         state.wind=msg;
+      },
+      synctype(state,msg){
+        state.type=msg;
       }
     },
     modules,

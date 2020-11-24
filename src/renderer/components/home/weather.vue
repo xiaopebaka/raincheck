@@ -8,7 +8,8 @@
                 <img :src="nowWeather.iconPath" style="width:100px"/>
                 <div>
                     <span>現在の天気:{{nowWeather.description}}</span>
-                    <span>{{nowWeather.temperature}}</span>℃
+                    <span v-if="type==='C'">{{nowWeather.temperature}}℃</span>
+                    <span v-else>{{nowWeather.temperature*1.8+32}}℉</span>
                 </div>
             </div>
             <div>
@@ -16,7 +17,8 @@
             <tr v-for="(list,index) of afterWeather" :key="index">
                 <td>{{list.month}}/{{list.date}}</td>
                 <td>{{list.description}}</td>
-                <td>{{list.temp}}℃</td>
+                <td v-if="type==='C'">{{list.temp}}℃</td>
+                <td v-else >{{list.temp*1.8+32}}℉</td>
                 <td><img :src="list.iconPath" class="image" style="margin-top:5px"/></td>
             </tr>
             </table>
@@ -32,7 +34,8 @@ export default {
             city:'',
             country:'',
             nowWeather:{},
-            afterWeather:[],        
+            afterWeather:[],
+            type:'',        
         }
     },
     created:function() {
@@ -41,7 +44,8 @@ export default {
              this.$http.post('https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyBthTv5T_E0Dbm2jQKa33BzMPUyYBE-kG8')
              .then(res => {
                 this.success(res);
-            }) 
+            })
+            this.type=this.$store.state.type; 
     },
     methods:{
         success: function(pos){
