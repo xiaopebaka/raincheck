@@ -35,6 +35,7 @@
                         <el-checkbox v-for="(item, index) of sortmemo" :key="index" :label="item">
                             <div class="item" v-on:click.self="item.todoflag=item.todoflag*-1">
                                 {{ item.msg }}まで、あと<span v-if="item.count < 5" style="color: red">{{ item.count }}</span><span v-else style="color: black">{{ item.count }}</span>日
+                                <!-- to-do -->
                                 <div v-if="item.todoflag===1">
                                     <div v-for="(todo,index) of item.todo" :key="index" :class="todo.flag===-1?'none':''" @click="todo.flag=todo.flag*-1">・{{todo.name}}</div>
                                 </div>
